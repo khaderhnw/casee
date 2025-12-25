@@ -20,6 +20,11 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 
+  <!-- Workaround for lucide-react UMD expecting `react` instead of `React` -->
+  <script>
+    window.react = window.React;
+  </script>
+
   <!-- Lucide React (UMD) -->
   <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.min.js"></script>
 
@@ -31,7 +36,20 @@
 
   <script type="text/babel">
     const { useState } = React;
-    const Lucide = window.LucideReact || {};
+
+    // Safe access to lucide-react icons:
+    // if the library fails to load, we return dummy components instead of crashing.
+    const Lucide =
+      window.LucideReact ||
+      new Proxy(
+        {},
+        {
+          get: () =>
+            function DummyIcon() {
+              return null;
+            },
+        }
+      );
 
     const {
       Zap,
@@ -42,8 +60,7 @@
       ArrowRight,
       Sparkles,
       ShieldCheck,
-      ArrowDown
-      // TrendingDown // not used, so we can ignore
+      ArrowDown,
     } = Lucide;
 
     const App = () => {
@@ -55,28 +72,34 @@
           title: "Instant Process",
           icon: <Zap className="w-6 h-6 text-yellow-500" />,
           activeIcon: <Zap className="w-6 h-6 text-white" />,
-          current: "Customers must wait up to one day for the certificate to be issued after submitting an application.",
-          future: "The document is always available in the Property Space as a locked document and unlocks instantly with one click.",
-          impact: "0 Waiting Time"
+          current:
+            "Customers must wait up to one day for the certificate to be issued after submitting an application.",
+          future:
+            "The document is always available in the Property Space as a locked document and unlocks instantly with one click.",
+          impact: "0 Waiting Time",
         },
         {
           id: 2,
           title: "Unified Process",
           icon: <FileText className="w-6 h-6 text-red-500" />,
           activeIcon: <FileText className="w-6 h-6 text-white" />,
-          current: "Customers are blocked by eligibility issues mid-journey, forcing them to leave the service, pay bills elsewhere, and reapply. In addition, customers do not receive the certificate directly in TAMM, even when applying through the platform.",
-          future: "Customers are provided with a Pay Now button to settle outstanding balances instantly, replacing the ineligibility message and enabling them to complete the process in one seamless journey.",
-          impact: "Seamless Flow"
+          current:
+            "Customers are blocked by eligibility issues mid-journey, forcing them to leave the service, pay bills elsewhere, and reapply. In addition, customers do not receive the certificate directly in TAMM, even when applying through the platform.",
+          future:
+            "Customers are provided with a Pay Now button to settle outstanding balances instantly, replacing the ineligibility message and enabling them to complete the process in one seamless journey.",
+          impact: "Seamless Flow",
         },
         {
           id: 3,
           title: "Always Updated",
           icon: <RefreshCw className="w-6 h-6 text-cyan-500" />,
           activeIcon: <RefreshCw className="w-6 h-6 text-white" />,
-          current: "Customers must reapply for the service each time they need an updated version of the certificate.",
-          future: "The certificate has a one-month validity and is automatically renewed every month as long as a zero balance is maintained, no reapplication required.",
-          impact: "Automatic Renewal"
-        }
+          current:
+            "Customers must reapply for the service each time they need an updated version of the certificate.",
+          future:
+            "The certificate has a one-month validity and is automatically renewed every month as long as a zero balance is maintained, no reapplication required.",
+          impact: "Automatic Renewal",
+        },
       ];
 
       const toggleExpand = (id) => {
@@ -104,13 +127,15 @@
                     Executive Briefing
                   </p>
                   <p className="text-slate-800 font-medium italic">
-                    Your Excellency Saeed Al Mulla, here are your ready notes for this case.
+                    Your Excellency Saeed Al Mulla, here are your ready notes
+                    for this case.
                   </p>
                 </div>
               </div>
 
               <p className="text-slate-500 max-w-2xl text-lg leading-relaxed mx-auto md:mx-0">
-                Transforming essential document applications with eligibility blocks into an always-available, one-click experience.
+                Transforming essential document applications with eligibility blocks
+                into an always-available, one-click experience.
               </p>
             </header>
 
@@ -151,7 +176,9 @@
                           <div className="flex items-center gap-2 mt-1">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-tighter">
                               Key Outcome:
-                              <span className="text-emerald-600 ml-1">{item.impact}</span>
+                              <span className="text-emerald-600 ml-1">
+                                {item.impact}
+                              </span>
                             </span>
                           </div>
                         </div>
@@ -159,7 +186,9 @@
                       <div
                         className={
                           "p-2 rounded-full transition-colors " +
-                          (isExpanded ? "bg-emerald-100 text-emerald-600" : "bg-slate-50 text-slate-400")
+                          (isExpanded
+                            ? "bg-emerald-100 text-emerald-600"
+                            : "bg-slate-50 text-slate-400")
                         }
                       >
                         {isExpanded ? (
@@ -229,8 +258,12 @@
                   <p className="text-slate-500 text-xs font-bold uppercase mb-1 tracking-wider">
                     Process Flow
                   </p>
-                  <div className="text-2xl font-black text-slate-800">2 Services → 1</div>
-                  <p className="text-xs text-slate-400 mt-1">By allowing payment on spot</p>
+                  <div className="text-2xl font-black text-slate-800">
+                    2 Services → 1
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">
+                    By allowing payment on spot
+                  </p>
                 </div>
                 <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-slate-500 text-xs font-bold uppercase mb-1 tracking-wider">
@@ -245,7 +278,9 @@
                       100%
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">Via Space Integration</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Via Space Integration
+                  </p>
                 </div>
                 <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-slate-500 text-xs font-bold uppercase mb-1 tracking-wider">
@@ -260,7 +295,9 @@
                       100%
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">Instant document access</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Instant document access
+                  </p>
                 </div>
               </div>
             </section>
@@ -269,7 +306,7 @@
       );
     };
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
+    const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<App />);
   </script>
 </body>
